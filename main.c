@@ -1,5 +1,7 @@
 #include <stdio.h>
 int main()
-{
-printf("hello word");
+{int a,b
+a=3;
+b=10;
+printf("\n a=%d  b=%d ",a,b);
 }
