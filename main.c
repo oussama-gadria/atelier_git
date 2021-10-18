@@ -4,4 +4,5 @@ int main()
 a=3;
 b=10;
 printf("\n a=%d  b=%d ",a,b);
+print("salut");
 }
