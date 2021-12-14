@@ -1,0 +1,429 @@
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <gtk/gtk.h>
+
+#include "callbacks.h"
+#include "interface.h"
+#include "support.h"
+#include "stock.h"
+#include <string.h>
+#include <stdio.h>
+
+int quitter = 2;
+int supp = 0;
+
+
+
+void
+on_radiobutton_quitter_oui_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+	if(gtk_toggle_button_get_active(GTK_RADIO_BUTTON(togglebutton)))
+		quitter = 1;
+}
+
+
+void
+on_radiobuttonquitter_non_toggled      (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+	if(gtk_toggle_button_get_active(GTK_RADIO_BUTTON(togglebutton)))
+		quitter = 2;
+}
+
+
+void
+on_button12_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *verification;
+	GtkWidget *aceuil;
+
+	aceuil = lookup_widget(button,"aceuil");
+	verification = create_verification();
+
+	gtk_widget_hide(aceuil);
+	gtk_widget_show(verification);
+
+}
+
+
+void
+on_button_ok_verification_clicked      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *verification;
+	GtkWidget *aceuil;
+
+	verification = lookup_widget(button,"verification");
+
+	if(quitter == 1){
+		gtk_widget_destroy(verification);
+	} else if(quitter ==2) {
+		gtk_widget_hide(verification);
+		aceuil=create_aceuil();
+		gtk_widget_show(aceuil);
+	}
+}
+
+
+void
+on_checkbutton_supprimer_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+	if(gtk_toggle_button_get_active(togglebutton))
+		supp = 1;
+	else
+		supp = 0;
+}
+
+
+void
+on_ajouter_clicked_stock               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget * ajout;
+	ajout = create_ajout ();
+ 	gtk_widget_show (ajout);
+}
+
+
+void
+on_modifier_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget * modification ;
+	modification = create_modification ();
+ 	gtk_widget_show (modification);
+}
+
+
+void
+on_supression_clicked_stock            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *supprime ;
+	supprime = create_supprime ();
+ 	gtk_widget_show (supprime);
+
+
+
+}
+
+
+void
+on_affichage_clicked_stock             (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * aff;
+  aff=lookup_widget(button,"tab1");
+  afficher_stock(aff);
+
+
+}
+
+
+void
+on_button22_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{fileload_stock();
+  int i;
+  char id[30];
+  GtkWidget *tab1, *ID;
+  ID=lookup_widget(button,"entry12");
+  tab1=lookup_widget(button,"tab1");
+  strcpy(id, gtk_entry_get_text(GTK_ENTRY(ID)));
+
+  i=isid_stock(id);
+  if(i!=-1){
+    viderliste_stock(tab1);
+    trouver_stock(tab1, i);
+  }
+  else{
+    viderliste_stock(tab1);
+  }
+
+
+}
+
+
+void
+on_button21_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * affiche;
+	affiche=lookup_widget(button,"affiche");
+	gtk_widget_destroy(affiche);
+}
+
+
+void
+on_button22_clicked                    (GtkButton       *button,
+                                        gpointer         user_data)
+{ fileload_stock();
+  int i;
+  char id[30];
+  GtkWidget *tab1, *ID;
+  ID=lookup_widget(button,"entry12");
+  tab1=lookup_widget(button,"tab1");
+  strcpy(id, gtk_entry_get_text(GTK_ENTRY(ID)));
+
+  i=isid_stock(id);
+  if(i!=-1){
+    viderliste_stock(tab1);
+    trouver_stock(tab1, i);
+  }
+  else{
+    viderliste_stock(tab1);
+  }
+
+}
+
+
+void
+on_button14_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{stock x;
+fileload_stock();
+GtkWidget * ajout;
+GtkWidget * nomp, * typep, * identite, * quantite, * ms, * inc;
+nomp = lookup_widget(button,"ajoutnom");
+typep = lookup_widget(button,"entry2");
+identite = lookup_widget(button,"entry3");
+quantite= lookup_widget(button,"spinbutton_ajouter");
+ms= lookup_widget(button,"ajoutmaniere");
+inc= lookup_widget(button,"label31");
+
+strcpy(x.N_P, gtk_entry_get_text(GTK_ENTRY(nomp)));
+strcpy(x.TY_P, gtk_entry_get_text(GTK_ENTRY(typep)));
+strcpy(x.ID, gtk_entry_get_text(GTK_ENTRY(identite)));
+sprintf(x.QTD,"%d", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(quantite)));
+strcpy(x.M_S, gtk_combo_box_get_active_text(GTK_COMBO_BOX(ms)));
+
+
+
+if( (isalphabet_stock(x.N_P)==1)&&(isalphabet_stock(x.TY_P)==1)&&(isid_stock(x.ID)==-1)&&(nospace_stock(x.ID)==1)&&(nospace_stock(x.QTD)==1)){
+ajouts_stock (x);
+filesave_stock();
+gtk_label_set_text(GTK_LABEL(inc), "Ajout avec succes.");
+}
+else{
+gtk_label_set_text(GTK_LABEL(inc), "Verifier vos données.");
+}
+
+
+}
+
+
+void
+on_button16_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * ajout;
+	ajout=lookup_widget(button,"ajout");
+	gtk_widget_destroy(ajout);
+
+
+}
+
+
+void
+on_button19_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * supprime;
+	supprime =lookup_widget(button,"supprime");
+	gtk_widget_destroy(supprime);
+
+}
+
+
+void
+on_button9_clicked_stock               (GtkButton       *button,
+                                        gpointer         user_data)
+{char x[100];
+
+fileload_stock();
+
+
+GtkWidget * iden,  * inc;
+GtkWidget *checkbutton_supprimer;
+
+iden = lookup_widget(button,"supprimeid");
+inc = lookup_widget(button,"label22");
+checkbutton_supprimer = lookup_widget(button,"checkbutton_supprimer");
+
+strcpy(x, gtk_entry_get_text(GTK_ENTRY(iden)));
+
+
+
+if(supprimer_stock(x) && supp == 1){
+
+filesave_stock();
+gtk_label_set_text(GTK_LABEL(inc), "succes.");
+} else if(supp !=1){
+gtk_label_set_text(GTK_LABEL(inc), "cochez la confirmation de la supprimation!");
+}else {
+gtk_label_set_text(GTK_LABEL(inc), "produit inexistant.");
+}
+
+}
+
+
+void
+on_checkbutton_supprimer_toggled_stock (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{if(gtk_toggle_button_get_active(togglebutton))
+		supp = 1;
+	else
+		supp = 0;
+
+}
+
+
+void
+on_button10_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * affiche;
+	affiche = create_affiche ();
+ 	gtk_widget_show (affiche);
+
+
+}
+
+
+void
+on_button11_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * repture;
+	GtkWidget *tab2;
+	GtkWidget *label_repture_message;
+	int test;
+
+	repture = create_repture ();
+	tab2 = lookup_widget(repture,"tab2");
+	label_repture_message = lookup_widget(repture,"label_repture_message");
+	
+	test = afficher_repture_stock(tab2);
+	if(test==0){
+		gtk_widget_show(label_repture_message);
+	}
+	
+ 	gtk_widget_show (repture);
+
+}
+
+
+void
+on_button12_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget *verification;
+	GtkWidget *aceuil;
+
+	aceuil = lookup_widget(button,"aceuil");
+	verification = create_verification();
+
+	gtk_widget_hide(aceuil);
+	gtk_widget_show(verification);
+
+
+}
+
+
+void
+on_button13_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{stock x;
+fileload_stock();
+int i ;
+char nom[20],type[20],ident[20],mss[20],quant[20];
+  GtkWidget * ajout;
+GtkWidget * nomp, * typep, * identite, * quantite, *ms, * inc;
+nomp= lookup_widget(button,"entry8");
+typep = lookup_widget(button,"entry9");
+identite = lookup_widget(button,"entry7");
+quantite = lookup_widget(button,"spinbutton_modifier");
+ms = lookup_widget(button,"comboboxentry1");
+inc = lookup_widget(button,"label39");
+
+strcpy(x.N_P, gtk_entry_get_text(GTK_ENTRY(nomp)));
+strcpy(x.TY_P, gtk_entry_get_text(GTK_ENTRY(typep)));
+strcpy(x.ID, gtk_entry_get_text(GTK_ENTRY(identite)));
+sprintf(x.QTD,"%d", gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(quantite)));
+strcpy(x.M_S, gtk_combo_box_get_active_text(GTK_COMBO_BOX(ms)));
+  
+
+if( (isalphabet_stock(x.N_P)==1)&&(isalphabet_stock(x.TY_P)==1)&&(isint_stock(x.ID)==1)&&(isid_stock(x.ID)!=-1)&&(nospace_stock(x.QTD)==1)&&(isint_stock(x.QTD)==1))
+{
+modifier_stock(x);
+filesave_stock();
+gtk_label_set_text(GTK_LABEL(inc), "Modification affectuer avec succes.");
+}
+else{
+gtk_label_set_text(GTK_LABEL(inc), "Verifier vos données.");
+ }
+
+
+
+}
+
+
+void
+on_button17_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * modification;
+	modification=lookup_widget(button,"modification");
+	gtk_widget_destroy(modification);
+
+}
+
+
+void
+on_button24_clicked_stock              (GtkButton       *button,
+                                        gpointer         user_data)
+{GtkWidget * repture;
+	repture=lookup_widget(button,"repture");
+	gtk_widget_destroy(repture);
+
+
+}
+
+
+void
+on_radiobuttonquitter_non_toggled_stock
+                                        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+if(gtk_toggle_button_get_active(GTK_RADIO_BUTTON(togglebutton)))
+	quitter= 2;
+
+}
+
+
+void
+on_radiobutton_quitter_oui_toggled_stock
+                                        (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+if(gtk_toggle_button_get_active(GTK_RADIO_BUTTON(togglebutton)))
+		quitter = 1;
+
+}
+
+
+void
+on_button_ok_verification_clicked_stock
+                                        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *verification;
+GtkWidget *aceuil;
+
+	verification = lookup_widget(button,"verification");
+
+	if(quitter == 1){
+		gtk_widget_destroy(verification);
+	} else if(quitter ==2) {
+		gtk_widget_hide(verification);
+		aceuil=create_aceuil();
+		gtk_widget_show(aceuil);
+	}}
+
